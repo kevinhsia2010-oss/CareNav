@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CareNav - Inclusive Healthcare Navigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern Premium Theme */
+        :root {
+            --bg-base: #f8fafc; /* Professional slate background */
+            --surface: #ffffff;
+            --surface-hover: #f1f5f9;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #4f46e5; /* Indigo */
+            --primary-hover: #4338ca;
+            --primary-light: #e0e7ff;
+            --accent: #0d9488; /* Teal */
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --success: #10b981;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        /* Dark Theme */
+        .dark {
+            --bg-base: #0f172a; /* slate-900 */
+            --surface: #1e293b; /* slate-800 */
+            --surface-hover: #334155; /* slate-700 */
+            --text-main: #f8fafc; /* slate-50 */
+            --text-muted: #94a3b8; /* slate-400 */
+            --primary: #818cf8; /* Lighter indigo */
+            --primary-hover: #6366f1;
+            --primary-light: #3730a3;
+            --accent: #2dd4bf;
+            --border: #334155; /* slate-700 */
+            --danger: #f87171;
+            --danger-light: #7f1d1d;
+            --success: #34d399;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+        }
+
+        /* High Contrast Theme */
+        html.high-contrast {
+            --bg-base: #000000;
+            --surface: #121212;
+            --surface-hover: #2d2d2d;
+            --text-main: #ffffff;
+            --text-muted: #e0e0e0;
+            --primary: #ffff00; /* High visibility yellow */
+            --primary-hover: #ffd600;
+            --primary-light: #333300;
+            --accent: #00e5ff;
+            --border: #ffffff;
+            --danger: #ff5252;
+            --danger-light: #4a0000;
+            --success: #69f0ae;
+            --shadow-sm: none;
+            --shadow-md: 0 0 0 1px #fff;
+            --shadow-lg: 0 0 0 2px #fff;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Dynamic Classes */
+        .surface { background-color: var(--surface); border-color: var(--border); box-shadow: var(--shadow-sm); }
+        .surface-card { background-color: var(--surface); border-color: var(--border); box-shadow: var(--shadow-md); transition: transform 0.2s, box-shadow 0.2s; }
+        .surface-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .text-main { color: var(--text-main); }
+        .text-muted { color: var(--text-muted); }
+        .bg-primary { background-color: var(--primary); color: #fff; }
+        .bg-primary:hover { background-color: var(--primary-hover); }
+        .text-primary { color: var(--primary); }
+        .border-theme { border-color: var(--border); }
+        
+        /* Dark Mode Overrides */
+        .dark input, .dark textarea, .dark select {
+            background-color: var(--surface-hover); 
+            color: var(--text-main); 
+            border: 2px solid var(--border);
+        }
+
+        /* High Contrast Overrides */
+        html.high-contrast .bg-primary { color: #000 !important; font-weight: bold; }
+        html.high-contrast input, html.high-contrast textarea, html.high-contrast select {
+            background-color: #000 !important; color: #fff !important; border: 2px solid #fff !important;
+        }
+        
+        /* Aggressive High Contrast overrides for maximum readability */
+        html.high-contrast * {
+            text-shadow: none !important;
+        }
+        html.high-contrast button {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+            border: 2px solid #ffffff !important;
+        }
+        html.high-contrast .bg-primary, 
+        html.high-contrast button.bg-primary {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+            border-color: #ffff00 !important;
+        }
+        html.high-contrast .text-primary, 
+        html.high-contrast i.fa-solid {
+            color: #ffff00 !important;
+        }
+        html.high-contrast .bg-primary i.fa-solid {
+             color: #000000 !important;
+        }
+        html.high-contrast [class*="bg-red-"], 
+        html.high-contrast [class*="bg-blue-"], 
+        html.high-contrast [class*="bg-green-"], 
+        html.high-contrast [class*="bg-purple-"],
+        html.high-contrast [class*="bg-amber-"],
+        html.high-contrast [class*="bg-emerald-"],
+        html.high-contrast [class*="bg-indigo-"],
+        html.high-contrast [class*="bg-orange-"],
+        html.high-contrast [class*="bg-teal-"] {
+            background-color: #000000 !important;
+            border-color: #ffffff !important;
+        }
+        html.high-contrast [class*="text-red-"], 
+        html.high-contrast [class*="text-blue-"], 
+        html.high-contrast [class*="text-green-"], 
+        html.high-contrast [class*="text-purple-"],
+        html.high-contrast [class*="text-amber-"],
+        html.high-contrast [class*="text-emerald-"],
+        html.high-contrast [class*="text-indigo-"],
+        html.high-contrast [class*="text-orange-"],
+        html.high-contrast [class*="text-teal-"] {
+            color: #ffff00 !important;
+        }
+        html.high-contrast .text-muted {
+            color: #ffff00 !important;
+        }
+        html.high-contrast .surface,
+        html.high-contrast .surface-card {
+            border: 2px solid #ffffff !important;
+            background-color: #000000 !important;
+        }
+        html.high-contrast .text-main {
+            color: #ffffff !important;
+        }
+
+        /* Text Scaling */
+        html.text-size-sm { font-size: 14px; }
+        html.text-size-md { font-size: 16px; }
+        html.text-size-lg { font-size: 18px; }
+        html.text-size-xl { font-size: 22px; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .pulse-ring { animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulseRing { 
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 
+        }
+
+        /* Print Styles - EXTREMELY IMPORTANT FOR MEDICAL PASSPORT */
+        @media print {
+            body { background: white !important; color: black !important; font-size: 12pt !important; }
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; display: block !important; }
+            .no-print { display: none !important; }
+            .print-border { border: 2px solid black !important; padding: 15px !important; margin-bottom: 15px !important; border-radius: 8px !important; }
+            .print-title { font-size: 24pt !important; font-weight: bold !important; border-bottom: 3px solid black !important; padding-bottom: 10px !important; margin-bottom: 20px !important; }
+            .print-label { font-weight: bold !important; font-size: 10pt !important; text-transform: uppercase !important; color: #333 !important; }
+            .print-value { font-size: 14pt !important; margin-bottom: 10px !important; }
+            /* Hide URL printing margins usually added by browsers */
+            @page { margin: 0.5cm; }
+        }
+
+        /* Input styling */
+        .input-field {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem; border: 2px solid var(--border);
+            background-color: var(--surface); color: var(--text-main); transition: all 0.2s;
+        }
+        .input-field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen overflow-hidden">
+
+    <!-- Mobile Header -->
+    <header class="md:hidden surface border-b border-theme p-4 flex justify-between items-center shrink-0 z-20 shadow-sm no-print">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-br from-indigo-600 to-teal-600 text-white p-2 rounded-xl shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm-1 9V8h2v3h3v2h-3v3h-2v-3H8v-2h3z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-extrabold text-main tracking-tight leading-none">CareNav</h1>
+                <p class="text-[9px] font-bold text-primary uppercase tracking-widest">Inclusive Health for Children</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="showChangePinModal()" id="mobile-change-pin-btn" class="hidden p-2.5 rounded-xl border-2 border-theme text-main hover:bg-gray-100 transition-colors" aria-label="Change PIN">
+                <i class="fa-solid fa-key text-xl"></i>
+            </button>
+            <button onclick="toggleParentLock()" id="mobile-lock-btn" class="p-2.5 rounded-xl border-2 border-theme text-main hover:bg-gray-100 transition-colors" aria-label="Parent Lock">
+                <i class="fa-solid fa-lock text-xl"></i>
+            </button>
+            <button onclick="toggleA11yMenu()" class="p-2.5 rounded-xl border-2 border-theme text-main hover:bg-gray-100 transition-colors" aria-label="Accessibility Settings">
+                <i class="fa-solid fa-universal-access text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar Navigation (Desktop) -->
+    <nav class="surface border-r border-theme w-full md:w-72 flex-shrink-0 flex flex-col hidden md:flex z-20 no-print shadow-sm">
+        <div class="p-6 flex items-center gap-3 border-b border-theme">
+            <div class="bg-gradient-to-br from-indigo-600 to-teal-600 text-white p-3 rounded-2xl shadow-lg shadow-indigo-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm-1 9V8h2v3h3v2h-3v3h-2v-3H8v-2h3z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-extrabold text-main tracking-tight leading-tight">CareNav</h1>
+                <p class="text-[10px] font-bold text-primary uppercase tracking-widest mt-0.5">Inclusive Health for Children</p>
+            </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto py-6">
+            <ul class="space-y-3 px-4" id="nav-menu">
+                <!-- Navigation Items injected here -->
+            </ul>
+        </div>
+
+        <div class="p-4 border-t border-theme bg-gray-50 dark:bg-gray-900/50 flex gap-2">
+            <button onclick="toggleParentLock()" id="desktop-lock-btn" class="flex-[1] flex items-center justify-center p-3.5 rounded-xl border-2 border-theme surface text-main font-bold hover:border-primary transition-all shadow-sm" title="Toggle Parent Lock">
+                <i class="fa-solid fa-lock"></i>
+            </button>
+            <button onclick="showChangePinModal()" id="desktop-change-pin-btn" class="hidden flex-[1] flex items-center justify-center p-3.5 rounded-xl border-2 border-theme surface text-main font-bold hover:border-primary transition-all shadow-sm" title="Change PIN">
+                <i class="fa-solid fa-key"></i>
+            </button>
+            <button onclick="toggleA11yMenu()" class="flex-[3] flex items-center justify-center gap-3 p-3.5 rounded-xl border-2 border-theme surface text-main font-bold hover:border-primary hover:text-primary transition-all shadow-sm" aria-label="Open Accessibility Settings">
+                <i class="fa-solid fa-universal-access text-lg"></i> Accessibility
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 relative flex flex-col h-full overflow-hidden bg-[var(--bg-base)]">
+        
+        <!-- Accessibility Settings Overlay -->
+        <div id="a11y-menu" class="hidden absolute top-0 left-0 w-full surface border-b border-theme p-4 shadow-xl z-50 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between fade-in no-print">
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-4 w-full">
+                <div class="flex items-center gap-2 font-bold text-main min-w-max">
+                    <div class="p-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-lg"><i class="fa-solid fa-text-height"></i></div>
+                    Text Size:
+                </div>
+                <div class="flex flex-wrap gap-2 w-full">
+                    <button onclick="changeTextSize('sm')" class="flex-1 md:flex-none px-4 py-2 border-2 border-theme rounded-xl text-main hover:bg-gray-100 font-semibold transition-all focus:ring-4 focus:ring-blue-200">Small</button>
+                    <button onclick="changeTextSize('md')" class="flex-1 md:flex-none px-4 py-2 border-2 border-theme rounded-xl text-main hover:bg-gray-100 font-semibold transition-all focus:ring-4 focus:ring-blue-200">Normal</button>
+                    <button onclick="changeTextSize('lg')" class="flex-1 md:flex-none px-4 py-2 border-2 border-theme rounded-xl text-main hover:bg-gray-100 font-semibold transition-all focus:ring-4 focus:ring-blue-200">Large</button>
+                    <button onclick="changeTextSize('xl')" class="flex-1 md:flex-none px-4 py-2 border-2 border-theme rounded-xl text-main hover:bg-gray-100 font-semibold transition-all focus:ring-4 focus:ring-blue-200">Extra Large</button>
+                </div>
+            </div>
+            
+            <div class="w-full h-px bg-gray-200 dark:bg-gray-700 md:hidden"></div>
+            
+            <div class="flex items-center justify-between w-full md:w-auto gap-4">
+                <button onclick="toggleHighContrast()" class="w-full md:w-auto px-6 py-2.5 bg-black text-yellow-300 border-2 border-yellow-300 rounded-xl font-bold shadow-lg hover:bg-gray-900 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-half-stroke"></i> High Contrast
+                </button>
+                <button onclick="toggleTheme()" class="w-full md:w-auto px-6 py-2.5 bg-gray-800 text-white dark:bg-gray-100 dark:text-gray-900 border-2 border-transparent rounded-xl font-bold shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:inline-block"></i> 
+                    <span class="dark:hidden">Dark Mode</span>
+                    <span class="hidden dark:inline">Light Mode</span>
+                </button>
+                <button onclick="toggleA11yMenu()" class="p-2.5 rounded-xl border-2 border-transparent text-main hover:bg-red-100 hover:text-red-600 hover:border-red-200 transition-all" aria-label="Close Settings">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Dynamic Tab Content -->
+        <div id="tab-content" class="flex-1 overflow-y-auto p-4 md:p-8 pb-28 md:pb-8">
+            <!-- Content injected via JS -->
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="md:hidden surface border-t border-theme fixed bottom-0 left-0 w-full flex justify-around p-2 z-40 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] no-print" id="mobile-nav-menu">
+        <!-- Mobile nav injected via JS -->
+    </nav>
+
+    <!-- Custom Modal/Alert System -->
+    <div id="custom-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 no-print fade-in">
+        <div class="surface rounded-3xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col transform transition-all scale-100">
+            <div class="p-6 text-center">
+                <div id="modal-icon" class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-info"></i>
+                </div>
+                <h3 id="modal-title" class="text-2xl font-bold text-main mb-2">Notice</h3>
+                <p id="modal-desc" class="text-muted text-lg"></p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-theme flex justify-center">
+                <button onclick="closeModal()" class="w-full bg-primary text-white py-3 rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all">Understood</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIN Unlock Modal -->
+    <div id="pin-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 no-print fade-in">
+        <div class="surface rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl flex flex-col">
+            <div class="p-6 text-center">
+                <div class="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-main mb-2">Parental Lock</h3>
+                <p class="text-muted text-sm mb-4">Enter PIN to access restricted areas.<br>(Default PIN: 1234)</p>
+                <input type="password" id="parent-pin-input" class="input-field text-center text-2xl tracking-widest font-mono" placeholder="****" maxlength="4" onkeypress="if(event.key==='Enter') verifyPin()">
+                <p id="pin-error" class="text-red-500 text-sm mt-2 hidden font-bold">Incorrect PIN</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-theme flex gap-3">
+                <button onclick="closePinModal()" class="flex-1 surface border-2 border-theme py-3 rounded-xl text-main font-bold hover:bg-gray-100 transition-colors">Cancel</button>
+                <button onclick="verifyPin()" class="flex-1 bg-primary text-white py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all">Unlock</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change PIN Modal -->
+    <div id="change-pin-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 no-print fade-in">
+        <div class="surface rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl flex flex-col">
+            <div class="p-6 text-center">
+                <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-main mb-2">Change PIN</h3>
+                <p class="text-muted text-sm mb-4">Enter a new 4-digit PIN twice to confirm.</p>
+                <div class="space-y-3">
+                    <input type="password" id="new-pin-input" class="input-field text-center text-xl tracking-widest font-mono" placeholder="New PIN" maxlength="4">
+                    <input type="password" id="confirm-pin-input" class="input-field text-center text-xl tracking-widest font-mono" placeholder="Confirm PIN" maxlength="4" onkeypress="if(event.key==='Enter') saveNewPin()">
+                </div>
+                <p id="change-pin-error" class="text-red-500 text-sm mt-3 hidden font-bold"></p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-theme flex gap-3">
+                <button onclick="closeChangePinModal()" class="flex-1 surface border-2 border-theme py-3 rounded-xl text-main font-bold hover:bg-gray-100 transition-colors">Cancel</button>
+                <button onclick="saveNewPin()" class="flex-1 bg-primary text-white py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all">Save PIN</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Core State ---
+        const state = {
+            currentTab: 'phrases',
+            textSize: 'md',
+            isDarkMode: false,
+            isHighContrast: false,
+            a11yMenuOpen: false,
+            isListening: false,
+            isParentMode: false,
+            parentPin: '1234', // Default, overwritten by loadPreferences
+            lockedTabs: ['medical-id', 'find-care'],
+            pendingTab: null,
+            searchQuery: '',
+            mapView: false,
+            filters: {
+                wheelchair: false,
+                asl: false,
+                sensory: false,
+                neuro: false,
+                braille: false,
+                serviceDog: false,
+                quietRoom: false
+            },
+            medicalData: {
+                name: '',
+                dob: '',
+                bloodType: '',
+                primaryDisability: '',
+                communicationPrefs: '',
+                allergies: '',
+                medications: '',
+                emergencyContactName: '',
+                emergencyContactPhone: '',
+                doctorNotes: ''
+            }
+        };
+
+        const tabs = [
+            { id: 'medical-id', title: 'Medical ID', icon: 'fa-id-card', desc: 'Create & Print Needs Sheet' },
+            { id: 'find-care', title: 'Find Care', icon: 'fa-hospital', desc: 'Filter accessible locations' },
+            { id: 'phrases', title: 'Comm Board', icon: 'fa-table-cells-large', desc: 'Quick speech & ASL' },
+            { id: 'transcribe', title: 'Transcribe', icon: 'fa-closed-captioning', desc: 'Live speech to text' },
+            { id: 'emergency', title: 'Emergency', icon: 'fa-truck-medical', desc: 'Simulated SOS & 911 Care' }
+        ];
+
+        // --- Mock Data ---
+        const facilities = [
+            { id: 1, name: "City General Hospital", type: "Hospital", distance: "1.2 miles", waitTime: "45 mins", features: ['wheelchair', 'asl', 'braille', 'serviceDog'], address: "100 Health Way", phone: "555-0101" },
+            { id: 2, name: "Mercy Accessible Clinic", type: "Urgent Care", distance: "2.5 miles", waitTime: "15 mins", features: ['wheelchair', 'sensory', 'asl', 'neuro', 'quietRoom'], address: "250 Care Blvd", phone: "555-0102" },
+            { id: 3, name: "Westside Urgent Care", type: "Urgent Care", distance: "3.1 miles", waitTime: "10 mins", features: ['wheelchair', 'serviceDog'], address: "440 West Ave", phone: "555-0103" },
+            { id: 4, name: "Quiet Mind Center", type: "Specialist", distance: "5.0 miles", waitTime: "Appt Only", features: ['sensory', 'neuro', 'quietRoom'], address: "88 Peaceful Ln", phone: "555-0104" },
+            { id: 5, name: "Downtown Medical", type: "Clinic", distance: "0.8 miles", waitTime: "30 mins", features: ['wheelchair', 'asl', 'braille'], address: "10 Main St", phone: "555-0105" }
+        ];
+
+        const phrases = [
+            { 
+                category: "Immediate Needs", 
+                color: "bg-red-50 dark:bg-red-900/40 border-red-200 dark:border-red-800/50", 
+                iconColor: "text-red-500 dark:text-red-400",
+                items: [
+                    { text: "I am in pain.", icon: "fa-face-frown" },
+                    { text: "I need to use the restroom.", icon: "fa-restroom" },
+                    { text: "I need an ASL interpreter.", icon: "fa-hands-asl-interpreting" },
+                    { text: "I am having trouble breathing.", icon: "fa-lungs" }
+                ] 
+            },
+            { 
+                category: "Communication", 
+                color: "bg-blue-50 dark:bg-blue-900/40 border-blue-200 dark:border-blue-800/50",
+                iconColor: "text-blue-500 dark:text-blue-400",
+                items: [
+                    { text: "Please speak slower.", icon: "fa-clock" },
+                    { text: "Please write that down.", icon: "fa-pen-to-square" },
+                    { text: "I don't understand.", icon: "fa-circle-question" },
+                    { text: "Can you repeat that?", icon: "fa-rotate-right" }
+                ] 
+            },
+            { 
+                category: "Vision Support", 
+                color: "bg-yellow-50 dark:bg-yellow-900/40 border-yellow-200 dark:border-yellow-800/50",
+                iconColor: "text-yellow-600 dark:text-yellow-400",
+                items: [
+                    { text: "I am blind or visually impaired.", icon: "fa-eye-slash" },
+                    { text: "Please read documents out loud.", icon: "fa-volume-high" },
+                    { text: "I need physical guidance.", icon: "fa-person-walking-with-cane" },
+                    { text: "Please describe what you are doing.", icon: "fa-comment-medical" }
+                ] 
+            },
+            { 
+                category: "Medical Questions", 
+                color: "bg-green-50 dark:bg-green-900/40 border-green-200 dark:border-green-800/50",
+                iconColor: "text-green-500 dark:text-green-400",
+                items: [
+                    { text: "What is this medication for?", icon: "fa-pills" },
+                    { text: "When will the doctor see me?", icon: "fa-user-doctor" },
+                    { text: "Am I going home today?", icon: "fa-house-chimney-medical" },
+                    { text: "What are the side effects?", icon: "fa-clipboard-list" }
+                ] 
+            }
+        ];
+
+        // --- Initialization ---
+        function init() {
+            loadPreferences();
+            loadMedicalData();
+            
+            updateLockUI();
+            renderNavigation();
+            renderTabContent();
+            setupLongPressReader();
+        }
+
+        function loadPreferences() {
+            const savedSize = localStorage.getItem('carenav-text-size');
+            if (savedSize) {
+                changeTextSize(savedSize);
+            } else {
+                changeTextSize('md');
+            }
+            const savedTheme = localStorage.getItem('carenav-theme') === 'true';
+            if (savedTheme) toggleTheme(true);
+            const savedHC = localStorage.getItem('carenav-hc') === 'true';
+            if (savedHC) toggleHighContrast(true);
+            const savedPin = localStorage.getItem('carenav-pin');
+            if (savedPin) state.parentPin = savedPin;
+        }
+
+        function loadMedicalData() {
+            const savedData = localStorage.getItem('carenav-medical-data');
+            if (savedData) {
+                state.medicalData = { ...state.medicalData, ...JSON.parse(savedData) };
+            }
+        }
+
+        function saveMedicalData() {
+            localStorage.setItem('carenav-medical-data', JSON.stringify(state.medicalData));
+        }
+
+        // --- Navigation ---
+        function switchTab(tabId) {
+            if (state.lockedTabs.includes(tabId) && !state.isParentMode) {
+                state.pendingTab = tabId;
+                showPinModal();
+                return;
+            }
+
+            state.currentTab = tabId;
+            renderNavigation();
+            renderTabContent();
+            document.getElementById('tab-content').scrollTop = 0;
+        }
+
+        function renderNavigation() {
+            const desktopNav = document.getElementById('nav-menu');
+            const mobileNav = document.getElementById('mobile-nav-menu');
+            let desktopHTML = '';
+            let mobileHTML = '';
+
+            tabs.forEach(tab => {
+                const isActive = state.currentTab === tab.id;
+                const isLocked = state.lockedTabs.includes(tab.id) && !state.isParentMode;
+                const lockIcon = isLocked ? '<i class="fa-solid fa-lock text-xs opacity-50 ml-auto"></i>' : '';
+                
+                // Desktop Item
+                desktopHTML += `
+                    <li>
+                        <button onclick="switchTab('${tab.id}')" data-read-aloud="${tab.title}. ${tab.desc}" class="w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 border-2 ${isActive ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white border-transparent shadow-lg shadow-indigo-500/20 translate-x-1' : 'border-transparent surface text-main hover:border-theme hover:bg-indigo-50'}" aria-current="${isActive ? 'page' : 'false'}">
+                            <i class="fa-solid ${tab.icon} text-xl w-6 text-center ${isActive ? 'text-white drop-shadow-md' : 'text-primary'}"></i>
+                            <div class="text-left hidden md:block flex-1">
+                                <div class="font-bold text-lg leading-tight flex items-center">${tab.title} ${lockIcon}</div>
+                                <div class="text-sm font-medium ${isActive ? 'text-indigo-100' : 'text-muted'}">${tab.desc}</div>
+                            </div>
+                        </button>
+                    </li>
+                `;
+
+                // Mobile Item
+                mobileHTML += `
+                    <button onclick="switchTab('${tab.id}')" data-read-aloud="${tab.title}" class="flex flex-col items-center justify-center p-2 flex-1 rounded-xl transition-all relative ${isActive ? 'text-primary' : 'text-muted hover:bg-indigo-50'}" aria-current="${isActive ? 'page' : 'false'}">
+                        ${isLocked ? '<div class="absolute top-1 right-2 w-4 h-4 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-[8px] border border-white"><i class="fa-solid fa-lock"></i></div>' : ''}
+                        <div class="${isActive ? 'bg-indigo-100 dark:bg-indigo-900/30 p-2 rounded-xl mb-1' : 'p-2 mb-1'}">
+                            <i class="fa-solid ${tab.icon} text-xl ${isActive ? 'scale-110' : ''} transition-transform"></i>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider">${tab.title}</span>
+                    </button>
+                `;
+            });
+
+            desktopNav.innerHTML = desktopHTML;
+            mobileNav.innerHTML = mobileHTML;
+        }
+
+        // --- Custom UI Elements ---
+        function showModal(title, description, type="info") {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = description;
+            
+            const iconWrap = document.getElementById('modal-icon');
+            if(type === 'error') {
+                iconWrap.className = 'w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-2xl';
+                iconWrap.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                iconWrap.className = 'w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4 text-2xl';
+                iconWrap.innerHTML = '<i class="fa-solid fa-info"></i>';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        // --- Parental Lock System ---
+        function showPinModal() {
+            document.getElementById('pin-modal').classList.remove('hidden');
+            const input = document.getElementById('parent-pin-input');
+            input.value = '';
+            document.getElementById('pin-error').classList.add('hidden');
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function closePinModal() {
+            document.getElementById('pin-modal').classList.add('hidden');
+            state.pendingTab = null;
+        }
+
+        function verifyPin() {
+            const input = document.getElementById('parent-pin-input').value;
+            if (input === state.parentPin) {
+                state.isParentMode = true;
+                closePinModal();
+                updateLockUI();
+                renderNavigation();
+                if (state.pendingTab) {
+                    switchTab(state.pendingTab);
+                }
+            } else {
+                document.getElementById('pin-error').classList.remove('hidden');
+                document.getElementById('parent-pin-input').value = '';
+                document.getElementById('parent-pin-input').focus();
+            }
+        }
+
+        function toggleParentLock() {
+            if (state.isParentMode) {
+                state.isParentMode = false;
+                updateLockUI();
+                renderNavigation();
+                
+                if (state.lockedTabs.includes(state.currentTab)) {
+                    switchTab('phrases');
+                }
+            } else {
+                state.pendingTab = state.currentTab; 
+                showPinModal();
+            }
+        }
+
+        // --- Change PIN Functionality ---
+        function showChangePinModal() {
+            document.getElementById('change-pin-modal').classList.remove('hidden');
+            document.getElementById('new-pin-input').value = '';
+            document.getElementById('confirm-pin-input').value = '';
+            document.getElementById('change-pin-error').classList.add('hidden');
+            setTimeout(() => document.getElementById('new-pin-input').focus(), 100);
+        }
+
+        function closeChangePinModal() {
+            document.getElementById('change-pin-modal').classList.add('hidden');
+        }
+
+        function saveNewPin() {
+            const newPin = document.getElementById('new-pin-input').value;
+            const confirmPin = document.getElementById('confirm-pin-input').value;
+            const errorEl = document.getElementById('change-pin-error');
+
+            if (newPin.length !== 4 || isNaN(newPin)) {
+                errorEl.innerText = "PIN must be exactly 4 digits.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            if (newPin !== confirmPin) {
+                errorEl.innerText = "PINs do not match. Please try again.";
+                errorEl.classList.remove('hidden');
+                document.getElementById('confirm-pin-input').value = '';
+                document.getElementById('confirm-pin-input').focus();
+                return;
+            }
+
+            // Save new PIN
+            state.parentPin = newPin;
+            localStorage.setItem('carenav-pin', newPin);
+            
+            closeChangePinModal();
+            showModal('Success', 'Your Parental Lock PIN has been updated successfully.');
+        }
+
+        function updateLockUI() {
+            const mBtn = document.getElementById('mobile-lock-btn');
+            const dBtn = document.getElementById('desktop-lock-btn');
+            const mChangeBtn = document.getElementById('mobile-change-pin-btn');
+            const dChangeBtn = document.getElementById('desktop-change-pin-btn');
+            
+            const icon = state.isParentMode ? '<i class="fa-solid fa-lock-open text-green-600"></i>' : '<i class="fa-solid fa-lock"></i>';
+            const title = state.isParentMode ? 'Lock App' : 'Unlock App';
+            
+            if (mBtn) {
+                mBtn.innerHTML = icon;
+                mBtn.className = state.isParentMode 
+                    ? 'p-2.5 rounded-xl border-2 border-green-200 bg-green-50 text-green-600 transition-colors'
+                    : 'p-2.5 rounded-xl border-2 border-theme text-main hover:bg-gray-100 transition-colors';
+            }
+            
+            if (dBtn) {
+                dBtn.innerHTML = icon;
+                dBtn.title = title;
+                dBtn.className = state.isParentMode
+                    ? 'flex-[1] flex items-center justify-center p-3.5 rounded-xl border-2 border-green-200 bg-green-50 text-green-600 font-bold transition-all shadow-sm'
+                    : 'flex-[1] flex items-center justify-center p-3.5 rounded-xl border-2 border-theme surface text-main font-bold hover:border-primary transition-all shadow-sm';
+            }
+
+            // Show 'Change PIN' button only when unlocked
+            if (mChangeBtn) {
+                state.isParentMode ? mChangeBtn.classList.remove('hidden') : mChangeBtn.classList.add('hidden');
+            }
+            if (dChangeBtn) {
+                state.isParentMode ? dChangeBtn.classList.remove('hidden') : dChangeBtn.classList.add('hidden');
+            }
+        }
+
+        // --- Accessibility Settings ---
+        function toggleA11yMenu() {
+            state.a11yMenuOpen = !state.a11yMenuOpen;
+            const menu = document.getElementById('a11y-menu');
+            if (state.a11yMenuOpen) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+            }
+        }
+
+        function changeTextSize(size) {
+            state.textSize = size;
+            document.documentElement.classList.remove('text-size-sm', 'text-size-md', 'text-size-lg', 'text-size-xl');
+            document.documentElement.classList.add(`text-size-${size}`);
+            localStorage.setItem('carenav-text-size', size);
+        }
+
+        function toggleTheme(force = null) {
+            state.isDarkMode = force !== null ? force : !state.isDarkMode;
+            if (state.isDarkMode) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            localStorage.setItem('carenav-theme', state.isDarkMode);
+        }
+
+        function toggleHighContrast(force = null) {
+            state.isHighContrast = force !== null ? force : !state.isHighContrast;
+            if (state.isHighContrast) {
+                document.documentElement.classList.add('high-contrast');
+            } else {
+                document.documentElement.classList.remove('high-contrast');
+            }
+            localStorage.setItem('carenav-hc', state.isHighContrast);
+        }
+
+        // --- Content Router ---
+        function renderTabContent() {
+            const container = document.getElementById('tab-content');
+            container.innerHTML = ''; 
+
+            let html = '';
+            switch (state.currentTab) {
+                case 'medical-id': html = renderMedicalID(); break;
+                case 'find-care': html = renderFindCare(); break;
+                case 'phrases': html = renderPhrases(); break;
+                case 'transcribe': html = renderTranscribe(); break;
+                case 'emergency': html = renderEmergency(); break;
+            }
+            
+            container.innerHTML = html;
+
+            if (state.currentTab === 'medical-id') attachMedicalFormListeners();
+        }
+
+        // --- Tab 5: Emergency Care (Prototype SOS) ---
+        let sosCountdownTimer = null;
+        let sosSecondsLeft = 5;
+
+        function startSosTrigger() {
+            sosSecondsLeft = 5;
+            const container = document.getElementById('sos-countdown-container');
+            if (container) {
+                container.classList.remove('hidden');
+                document.getElementById('sos-seconds').innerText = sosSecondsLeft;
+            }
+
+            speakText("Emergency SOS initiated. Tap cancel to stop.");
+
+            sosCountdownTimer = setInterval(() => {
+                sosSecondsLeft--;
+                if (document.getElementById('sos-seconds')) {
+                    document.getElementById('sos-seconds').innerText = sosSecondsLeft;
+                }
+
+                if (sosSecondsLeft <= 0) {
+                    clearInterval(sosCountdownTimer);
+                    sosCountdownTimer = null;
+                    triggerSimulated911Call();
+                }
+            }, 1000);
+        }
+
+        function cancelSosTrigger() {
+            if (sosCountdownTimer) {
+                clearInterval(sosCountdownTimer);
+                sosCountdownTimer = null;
+            }
+            const container = document.getElementById('sos-countdown-container');
+            if (container) container.classList.add('hidden');
+            speakText("Emergency call canceled.");
+        }
+
+        function triggerSimulated911Call() {
+            const container = document.getElementById('sos-countdown-container');
+            if (container) container.classList.add('hidden');
+
+            const activeUi = document.getElementById('emergency-active-call');
+            if (activeUi) {
+                activeUi.classList.remove('hidden');
+                speakText("Simulated 911 dispatch connected. Emergency medical services notified of your accessibility accommodations.");
+            }
+        }
+
+        function endSimulated911Call() {
+            const activeUi = document.getElementById('emergency-active-call');
+            if (activeUi) activeUi.classList.add('hidden');
+            speakText("Emergency call ended.");
+        }
+
+        function renderEmergency() {
+            return `
+                <div class="max-w-4xl mx-auto fade-in pb-10">
+                    <div class="mb-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-vial"></i> Prototype Mode — Non-functional 911
+                        </div>
+                        <h2 tabindex="0" data-read-aloud="Urgent Care and Emergency Response" class="text-3xl md:text-4xl font-extrabold text-main mb-2">Emergency Care & SOS</h2>
+                        <p tabindex="0" data-read-aloud="Simulate urgent medical help requests with pre-set accommodation broadcasts." class="text-muted text-lg">Instant accessibility-first emergency alert prototype.</p>
+                    </div>
+
+                    <!-- Big Emergency Button Area -->
+                    <div class="surface-card rounded-3xl p-8 mb-8 border-2 border-red-200 dark:border-red-900 text-center flex flex-col items-center justify-center">
+                        <div class="mb-4">
+                            <p class="text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-widest">Simulated Emergency SOS</p>
+                            <p class="text-muted text-sm">Pressing this will launch a simulated 911 call with auto-transmitted accommodation preferences.</p>
+                        </div>
+
+                        <button onclick="startSosTrigger()" data-read-aloud="Simulate 911 Call button" class="w-48 h-48 rounded-full bg-red-600 hover:bg-red-700 text-white font-black text-2xl shadow-2xl flex flex-col items-center justify-center gap-2 transform active:scale-95 transition-all pulse-ring focus:outline-none focus:ring-4 focus:ring-red-400">
+                            <i class="fa-solid fa-phone-flip text-5xl"></i>
+                            <span>CALL 911</span>
+                            <span class="text-xs font-normal opacity-80">(Prototype)</span>
+                        </button>
+
+                        <!-- Countdown Modal / Overlay inside card -->
+                        <div id="sos-countdown-container" class="hidden mt-6 p-4 bg-red-50 dark:bg-red-900/30 border-2 border-red-500 rounded-2xl w-full max-w-md fade-in">
+                            <p class="text-lg font-bold text-red-700 dark:text-red-300 mb-2">Connecting to Simulated 911 in...</p>
+                            <div class="text-5xl font-black text-red-600 dark:text-red-400 mb-4" id="sos-seconds">5</div>
+                            <button onclick="cancelSosTrigger()" data-read-aloud="Cancel emergency call" class="w-full py-3 bg-gray-800 text-white rounded-xl font-bold hover:bg-gray-900 transition-colors">
+                                Cancel Emergency Call
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Active Simulated Call Interface -->
+                    <div id="emergency-active-call" class="hidden surface-card rounded-3xl p-6 mb-8 border-4 border-green-500 fade-in">
+                        <div class="flex items-center justify-between pb-4 border-b border-theme mb-4">
+                            <div class="flex items-center gap-3">
+                                <span class="relative flex h-4 w-4">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
+                                </span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-main">Connected to Simulated 911</h3>
+                                    <p class="text-xs text-muted">Dispatch location: 123 Health Ave (GPS Active)</p>
+                                </div>
+                            </div>
+                            <button onclick="endSimulated911Call()" class="px-4 py-2 bg-red-600 text-white rounded-xl font-bold text-sm hover:bg-red-700">
+                                End Call
+                            </button>
+                        </div>
+
+                        <!-- Auto-Broadcast Payload sent to 911 -->
+                        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl mb-4 space-y-2">
+                            <div class="text-xs font-bold text-primary uppercase tracking-wider"><i class="fa-solid fa-tower-cell mr-1"></i> Data Broadcast Sent to Emergency Operator:</div>
+                            <p class="text-sm font-semibold text-main"><strong>Patient:</strong> ${state.medicalData.name || 'Jane Doe'} (${state.medicalData.primaryDisability || 'Profound Deafness'})</p>
+                            <p class="text-sm font-semibold text-main"><strong>Primary Accommodation Required:</strong> ${state.medicalData.communicationPrefs || 'ASL / Written text required'}</p>
+                            <p class="text-sm font-semibold text-red-600 dark:text-red-400"><strong>Allergies:</strong> ${state.medicalData.allergies || 'Penicillin'}</p>
+                        </div>
+
+                        <!-- Chat Simulation -->
+                        <div class="space-y-3 mb-4">
+                            <div class="bg-blue-100 dark:bg-blue-900/40 p-3 rounded-xl max-w-xs text-sm font-medium">
+                                <strong>Operator:</strong> 911 Dispatcher active. We received your medical passport accommodations. First responders are on the way.
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button onclick="speakText('I cannot speak. Please read my medical details on screen.')" class="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:opacity-90">
+                                Speak "I cannot speak" to Operator
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Rapid Urgent Care Action Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="surface-card p-6 rounded-3xl">
+                            <h3 class="text-lg font-bold text-main mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-kit-medical text-red-500"></i> Emergency Quick Broadcasts
+                            </h3>
+                            <div class="space-y-2">
+                                <button onclick="speakText('Emergency! I need immediate help.')" data-read-aloud="Emergency! I need immediate help." class="w-full text-left p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 font-bold border border-red-200">
+                                    <i class="fa-solid fa-volume-high mr-2"></i> "Emergency! I need immediate help."
+                                </button>
+                                <button onclick="speakText('Please call an ambulance for me.')" data-read-aloud="Please call an ambulance for me." class="w-full text-left p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 font-bold border border-red-200">
+                                    <i class="fa-solid fa-volume-high mr-2"></i> "Please call an ambulance for me."
+                                </button>
+                                <button onclick="speakText('I am having a severe allergic reaction.')" data-read-aloud="I am having a severe allergic reaction." class="w-full text-left p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 font-bold border border-red-200">
+                                    <i class="fa-solid fa-volume-high mr-2"></i> "I am having a severe allergic reaction."
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="surface-card p-6 rounded-3xl">
+                            <h3 class="text-lg font-bold text-main mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-address-book text-primary"></i> Emergency Contacts
+                            </h3>
+                            <div class="space-y-2">
+                                <div class="p-3 border border-theme rounded-xl flex items-center justify-between">
+                                    <div>
+                                        <div class="font-bold text-main">${state.medicalData.emergencyContactName || 'Primary Emergency Contact'}</div>
+                                        <div class="text-sm text-muted">${state.medicalData.emergencyContactPhone || '555-0199'}</div>
+                                    </div>
+                                    <button onclick="showModal('Call Simulated', 'Calling emergency contact: ${state.medicalData.emergencyContactPhone || '555-0199'}')" class="p-2.5 bg-green-500 text-white rounded-xl font-bold">
+                                        <i class="fa-solid fa-phone"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Tab 1: Medical Passport (NEW & COMPLEX) ---
+        function triggerPrintPassport() {
+            const printContent = document.getElementById('print-area').innerHTML;
+            const printWindow = window.open('', '_blank', 'width=800,height=900');
+            
+            if (!printWindow) {
+                // Fallback if popup blocker blocks new window
+                window.print();
+                return;
+            }
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Medical Passport - CareNav</title>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; padding: 20px; color: #000; background: #fff; }
+                        .print-border { border: 2px solid black; padding: 15px; margin-bottom: 15px; border-radius: 8px; }
+                        .print-title { font-size: 24pt; font-weight: bold; border-bottom: 3px solid black; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
+                        .print-label { font-weight: bold; font-size: 10pt; text-transform: uppercase; color: #333; margin-bottom: 4px; }
+                        .print-value { font-size: 14pt; margin-bottom: 10px; }
+                        @page { margin: 0.5cm; }
+                    </style>
+                </head>
+                <body>
+                    ${printContent}
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 300);
+        }
+
+        function renderMedicalID() {
+            return `
+                <div class="max-w-4xl mx-auto fade-in pb-10">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 no-print">
+                        <div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-main mb-2">Medical Passport</h2>
+                            <p class="text-muted text-lg">Create a printable sheet of your needs to hand to doctors.</p>
+                        </div>
+                        <button onclick="triggerPrintPassport()" class="w-full md:w-auto bg-primary text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:scale-105 transition-all flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-print text-xl"></i> Print Passport
+                        </button>
+                    </div>
+
+                    <!-- Input Form (Hidden on Print) -->
+                    <div class="surface-card rounded-3xl p-6 md:p-8 space-y-8 no-print">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 rounded-xl p-4 flex gap-4 items-start">
+                            <i class="fa-solid fa-circle-info text-blue-500 mt-1 text-xl"></i>
+                            <p class="text-sm text-blue-800 dark:text-blue-200">This information is saved locally on your device only. Fill this out before your visit and print it out to ensure staff understand your needs immediately.</p>
+                        </div>
+
+                        <form id="medical-form" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Full Name</label>
+                                    <input type="text" id="m-name" value="${state.medicalData.name}" placeholder="e.g. Jane Doe" class="input-field">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Date of Birth</label>
+                                    <input type="date" id="m-dob" value="${state.medicalData.dob}" class="input-field">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-theme pt-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Primary Disability / Diagnosis</label>
+                                    <input type="text" id="m-disability" value="${state.medicalData.primaryDisability}" placeholder="e.g. Profound Deafness, Autism" class="input-field">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Communication Preferences</label>
+                                    <input type="text" id="m-comm" value="${state.medicalData.communicationPrefs}" placeholder="e.g. ASL only, Text-to-Speech, Written" class="input-field">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-theme pt-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Known Allergies</label>
+                                    <textarea id="m-allergies" rows="3" placeholder="List medications, food, latex, etc." class="input-field resize-none">${state.medicalData.allergies}</textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Current Medications</label>
+                                    <textarea id="m-meds" rows="3" placeholder="List current prescriptions" class="input-field resize-none">${state.medicalData.medications}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-theme pt-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Emergency Contact Name</label>
+                                    <input type="text" id="m-ec-name" value="${state.medicalData.emergencyContactName}" placeholder="Name & Relationship" class="input-field">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Emergency Contact Phone</label>
+                                    <input type="tel" id="m-ec-phone" value="${state.medicalData.emergencyContactPhone}" placeholder="Phone Number" class="input-field">
+                                </div>
+                            </div>
+
+                            <div class="border-t border-theme pt-6">
+                                <label class="block text-sm font-bold text-main mb-2 uppercase tracking-wide">Important Notes for Doctor/Nurses</label>
+                                <textarea id="m-notes" rows="4" placeholder="e.g. I need bright lighting to read lips. Please approach from the front. I have sensory sensitivity to loud noises." class="input-field resize-none">${state.medicalData.doctorNotes}</textarea>
+                            </div>
+                        </form>
+                        <div class="flex justify-end">
+                            <span class="text-sm font-bold text-green-600 flex items-center gap-2"><i class="fa-solid fa-check-circle"></i> Auto-saved</span>
+                        </div>
+                    </div>
+
+                    <!-- PRINT LAYOUT (Visible ONLY during print) -->
+                    <div id="print-area" class="hidden">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h1 class="print-title">MEDICAL ACCOMMODATION PASSPORT</h1>
+                            <p style="font-size: 14pt; font-weight: bold; padding: 10px; background: #f0f0f0; border: 2px solid black;">PLEASE READ IMMEDIATELY UPON INTAKE</p>
+                        </div>
+                        
+                        <div class="print-border">
+                            <div class="print-label">Patient Name</div>
+                            <div class="print-value" id="p-name">${state.medicalData.name || '___________________________'}</div>
+                            <div class="print-label">Date of Birth</div>
+                            <div class="print-value" id="p-dob">${state.medicalData.dob || '___________________________'}</div>
+                        </div>
+
+                        <div class="print-border">
+                            <div class="print-label">Primary Disability / Medical Condition</div>
+                            <div class="print-value" style="font-weight:bold; font-size:18pt;" id="p-disability">${state.medicalData.primaryDisability || 'None Listed'}</div>
+                        </div>
+
+                        <div class="print-border" style="border: 4px solid black !important; background-color: #f8f8f8 !important;">
+                            <div class="print-label" style="font-size: 14pt !important;">CRITICAL: Communication Preference</div>
+                            <div class="print-value" style="font-size: 20pt !important; font-weight: bold;" id="p-comm">${state.medicalData.communicationPrefs || 'Standard'}</div>
+                        </div>
+
+                        <div class="print-border">
+                            <div class="print-label" style="color: #d00 !important;">Allergies</div>
+                            <div class="print-value" id="p-allergies">${state.medicalData.allergies || 'No known allergies listed.'}</div>
+                        </div>
+                        
+                        <div class="print-border">
+                            <div class="print-label">Current Medications</div>
+                            <div class="print-value" id="p-meds">${state.medicalData.medications || 'None listed.'}</div>
+                        </div>
+
+                        <div class="print-border">
+                            <div class="print-label">Important Accommodations / Notes for Staff</div>
+                            <div class="print-value" style="font-style: italic; min-height: 100px;" id="p-notes">${state.medicalData.doctorNotes || 'None'}</div>
+                        </div>
+
+                        <div class="print-border">
+                            <div style="display: flex; justify-content: space-between;">
+                                <div>
+                                    <div class="print-label">Emergency Contact</div>
+                                    <div class="print-value" id="p-ec-name">${state.medicalData.emergencyContactName || '___________________________'}</div>
+                                </div>
+                                <div>
+                                    <div class="print-label">Contact Phone</div>
+                                    <div class="print-value" id="p-ec-phone">${state.medicalData.emergencyContactPhone || '___________________________'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function attachMedicalFormListeners() {
+            const inputs = ['name', 'dob', 'disability', 'comm', 'allergies', 'meds', 'ec-name', 'ec-phone', 'notes'];
+            
+            const stateMap = {
+                'name': 'name', 'dob': 'dob', 'disability': 'primaryDisability', 
+                'comm': 'communicationPrefs', 'allergies': 'allergies', 'meds': 'medications',
+                'ec-name': 'emergencyContactName', 'ec-phone': 'emergencyContactPhone', 'notes': 'doctorNotes'
+            };
+
+            inputs.forEach(id => {
+                const el = document.getElementById(`m-${id}`);
+                if (el) {
+                    el.addEventListener('input', (e) => {
+                        const val = e.target.value;
+                        state.medicalData[stateMap[id]] = val;
+                        saveMedicalData();
+                        const printEl = document.getElementById(`p-${id}`);
+                        if(printEl) printEl.innerText = val || (id === 'allergies' || id === 'meds' ? 'None listed.' : '___________________________');
+                    });
+                }
+            });
+        }
+
+        // --- Tab 2: Find Care ---
+        function toggleFilter(filterType) {
+            state.filters[filterType] = !state.filters[filterType];
+            renderTabContent();
+        }
+
+        function updateSearch(val) {
+            state.searchQuery = val.toLowerCase();
+            renderTabContent();
+            const searchInput = document.getElementById('location-search');
+            if (searchInput) {
+                searchInput.focus();
+                searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+            }
+        }
+
+        function toggleMapView() {
+            state.mapView = !state.mapView;
+            renderTabContent();
+        }
+
+        function renderFindCare() {
+            let filteredFacilities = facilities.filter(f => {
+                if (state.filters.wheelchair && !f.features.includes('wheelchair')) return false;
+                if (state.filters.asl && !f.features.includes('asl')) return false;
+                if (state.filters.sensory && !f.features.includes('sensory')) return false;
+                if (state.filters.neuro && !f.features.includes('neuro')) return false;
+                if (state.filters.braille && !f.features.includes('braille')) return false;
+                if (state.filters.serviceDog && !f.features.includes('serviceDog')) return false;
+                if (state.filters.quietRoom && !f.features.includes('quietRoom')) return false;
+                
+                if (state.searchQuery && !f.name.toLowerCase().includes(state.searchQuery) && !f.address.toLowerCase().includes(state.searchQuery)) {
+                    return false;
+                }
+                
+                return true;
+            });
+
+            const getBtnClass = (isActive, activeColor, hoverColor) => isActive 
+                ? `px-4 py-2 text-sm rounded-xl border-2 border-transparent ${activeColor} text-white font-bold shadow-md transform scale-105 transition-all flex items-center gap-2`
+                : `px-4 py-2 text-sm rounded-xl border-2 border-theme surface text-main ${hoverColor} font-semibold transition-all flex items-center gap-2`;
+
+            let mapIframe = '';
+            if (state.mapView) {
+                const q = filteredFacilities.length > 0 ? encodeURIComponent(filteredFacilities[0].address + " " + filteredFacilities[0].name) : "hospital";
+                mapIframe = `
+                    <div class="w-full h-96 bg-gray-200 rounded-3xl overflow-hidden shadow-inner mb-6 relative border-2 border-theme">
+                        <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q=${q}&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+                        <div class="absolute top-4 right-4 bg-white px-3 py-1.5 rounded-lg shadow-md text-xs font-bold text-gray-700 pointer-events-none flex items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-primary"></i> Live Map Active
+                        </div>
+                    </div>
+                `;
+            }
+
+            let html = `
+                <div class="max-w-5xl mx-auto fade-in">
+                    <div class="mb-8">
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-main mb-2">Find Accessible Care</h2>
+                        <p class="text-muted text-lg">Filter locations strictly by the accommodations you require.</p>
+                    </div>
+                    
+                    <!-- Search and Map Toggle -->
+                    <div class="mb-6 flex flex-col md:flex-row gap-4">
+                        <div class="flex-1 relative">
+                            <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-muted"></i>
+                            <input type="text" id="location-search" value="${state.searchQuery || ''}" oninput="updateSearch(this.value)" placeholder="Search by hospital name, city, or address..." class="input-field pl-12 w-full shadow-sm text-lg">
+                        </div>
+                        <button onclick="toggleMapView()" class="px-6 py-3 bg-white dark:bg-gray-800 border-2 border-theme rounded-xl text-main font-bold hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center gap-2 shadow-sm transition-all whitespace-nowrap">
+                            <i class="fa-solid ${state.mapView ? 'fa-list' : 'fa-map-location-dot'} text-primary"></i> 
+                            <span>${state.mapView ? 'Hide Map' : 'Show on Map'}</span>
+                        </button>
+                    </div>
+
+                    ${mapIframe}
+
+                    <!-- Smart Filters -->
+                    <div class="surface-card rounded-3xl p-6 mb-8 border-l-8 border-accent">
+                        <h3 class="text-sm font-bold mb-4 text-muted uppercase tracking-wider"><i class="fa-solid fa-filter mr-2"></i> Required Accommodations:</h3>
+                        <div class="flex flex-wrap gap-2.5">
+                            <button onclick="toggleFilter('wheelchair')" class="${getBtnClass(state.filters.wheelchair, 'bg-blue-600', 'hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 dark:hover:bg-blue-900/30')}">
+                                <i class="fa-solid fa-wheelchair ${state.filters.wheelchair ? '' : 'text-blue-500'}"></i> Wheelchair Access
+                            </button>
+                            <button onclick="toggleFilter('asl')" class="${getBtnClass(state.filters.asl, 'bg-purple-600', 'hover:bg-purple-50 hover:border-purple-300 hover:text-purple-700 dark:hover:bg-purple-900/30')}">
+                                <i class="fa-solid fa-hands-asl-interpreting ${state.filters.asl ? '' : 'text-purple-500'}"></i> ASL Staff
+                            </button>
+                            <button onclick="toggleFilter('sensory')" class="${getBtnClass(state.filters.sensory, 'bg-amber-500', 'hover:bg-amber-50 hover:border-amber-300 hover:text-amber-700 dark:hover:bg-amber-900/30')}">
+                                <i class="fa-solid fa-lightbulb ${state.filters.sensory ? '' : 'text-amber-500'}"></i> Low Sensory
+                            </button>
+                            <button onclick="toggleFilter('neuro')" class="${getBtnClass(state.filters.neuro, 'bg-emerald-600', 'hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 dark:hover:bg-emerald-900/30')}">
+                                <i class="fa-solid fa-brain ${state.filters.neuro ? '' : 'text-emerald-500'}"></i> Neuro-Trained
+                            </button>
+                            <button onclick="toggleFilter('braille')" class="${getBtnClass(state.filters.braille, 'bg-indigo-600', 'hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-700 dark:hover:bg-indigo-900/30')}">
+                                <i class="fa-solid fa-braille ${state.filters.braille ? '' : 'text-indigo-500'}"></i> Braille Support
+                            </button>
+                            <button onclick="toggleFilter('serviceDog')" class="${getBtnClass(state.filters.serviceDog, 'bg-orange-500', 'hover:bg-orange-50 hover:border-orange-300 hover:text-orange-700 dark:hover:bg-orange-900/30')}">
+                                <i class="fa-solid fa-dog ${state.filters.serviceDog ? '' : 'text-orange-500'}"></i> Service Dog OK
+                            </button>
+                            <button onclick="toggleFilter('quietRoom')" class="${getBtnClass(state.filters.quietRoom, 'bg-teal-600', 'hover:bg-teal-50 hover:border-teal-300 hover:text-teal-700 dark:hover:bg-teal-900/30')}">
+                                <i class="fa-solid fa-bed ${state.filters.quietRoom ? '' : 'text-teal-500'}"></i> Quiet Room
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results List -->
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center mb-2 px-2">
+                            <span class="font-bold text-main">${filteredFacilities.length} Results Found</span>
+                        </div>
+                        ${filteredFacilities.length === 0 ? `
+                            <div class="surface-card rounded-3xl p-12 text-center border-2 border-dashed border-theme">
+                                <i class="fa-solid fa-hospital-user text-6xl text-gray-300 mb-4"></i>
+                                <h3 class="text-2xl font-bold text-main mb-2">No exact matches</h3>
+                                <p class="text-muted">Try removing some filters to see more locations.</p>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        ${filteredFacilities.map(f => `
+                            <div class="surface-card rounded-3xl p-6 flex flex-col h-full relative overflow-hidden group">
+                                <div class="absolute top-0 right-0 bg-gray-100 dark:bg-gray-800 text-xs font-bold px-3 py-1 rounded-bl-xl text-muted uppercase tracking-wider">${f.type}</div>
+                                
+                                <div class="flex-1">
+                                    <h3 class="text-2xl font-extrabold text-main mb-1 pr-16">${f.name}</h3>
+                                    <p class="text-muted font-medium mb-4 flex items-center gap-2">
+                                        <i class="fa-solid fa-location-dot text-primary"></i> ${f.distance} • ${f.address}
+                                    </p>
+                                    
+                                    <div class="flex flex-wrap gap-2 mb-6">
+                                        ${f.features.includes('wheelchair') ? '<span class="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-3 py-1.5 rounded-lg text-xs font-bold border border-blue-200"><i class="fa-solid fa-wheelchair mr-1"></i> Wheelchair</span>' : ''}
+                                        ${f.features.includes('asl') ? '<span class="bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 px-3 py-1.5 rounded-lg text-xs font-bold border border-purple-200"><i class="fa-solid fa-hands-asl-interpreting mr-1"></i> ASL</span>' : ''}
+                                        ${f.features.includes('sensory') ? '<span class="bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 px-3 py-1.5 rounded-lg text-xs font-bold border border-amber-200"><i class="fa-solid fa-lightbulb mr-1"></i> Low Sensory</span>' : ''}
+                                        ${f.features.includes('neuro') ? '<span class="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 px-3 py-1.5 rounded-lg text-xs font-bold border border-emerald-200"><i class="fa-solid fa-brain mr-1"></i> Neuro-Trained</span>' : ''}
+                                        ${f.features.includes('braille') ? '<span class="bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 px-3 py-1.5 rounded-lg text-xs font-bold border border-indigo-200"><i class="fa-solid fa-braille mr-1"></i> Braille</span>' : ''}
+                                        ${f.features.includes('serviceDog') ? '<span class="bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 px-3 py-1.5 rounded-lg text-xs font-bold border border-orange-200"><i class="fa-solid fa-dog mr-1"></i> Service Dog</span>' : ''}
+                                        ${f.features.includes('quietRoom') ? '<span class="bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300 px-3 py-1.5 rounded-lg text-xs font-bold border border-teal-200"><i class="fa-solid fa-bed mr-1"></i> Quiet Room</span>' : ''}
+                                    </div>
+                                </div>
+
+                                <div class="mt-auto pt-4 border-t border-theme flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px] font-black text-muted uppercase tracking-widest mb-1">Est. Wait Time</div>
+                                        <div class="text-xl font-extrabold text-main">${f.waitTime}</div>
+                                    </div>
+                                    <button onclick="showModal('Directions Sent', 'Navigating to ${f.name} via preferred maps app.')" class="bg-gray-100 hover:bg-primary hover:text-white text-main px-6 py-3 rounded-xl font-bold transition-colors shadow-sm">
+                                        <i class="fa-solid fa-location-arrow mr-2"></i> Go
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
+        // --- Tab 3: ASL & Phrases (Enhanced Comm Board) ---
+        let currentPhrase = "";
+        function openAslModal(phrase) {
+            currentPhrase = phrase;
+            speakText(phrase);
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); 
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.85; 
+                utterance.pitch = 1;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showModal("Error", "Text-to-speech is not supported in your browser.", "error");
+            }
+        }
+
+        function typeKey(char) {
+            const input = document.getElementById('custom-type-input');
+            if (input) {
+                input.value += char;
+                input.focus();
+            }
+        }
+
+        function deleteKey() {
+            const input = document.getElementById('custom-type-input');
+            if (input) {
+                input.value = input.value.slice(0, -1);
+                input.focus();
+            }
+        }
+
+        function speakCustomText() {
+            const input = document.getElementById('custom-type-input');
+            if (input && input.value.trim() !== '') {
+                speakText(input.value.trim());
+            }
+        }
+
+        function handleKeyboardEnter(event) {
+            if (event.key === 'Enter') {
+                speakCustomText();
+            }
+        }
+
+        function renderPhrases() {
+            let html = `
+                <div class="max-w-[90rem] mx-auto fade-in flex flex-col gap-8 pb-10">
+                    
+                    <!-- Pre-made Phrases (Full Width) -->
+                    <div class="w-full">
+                        <div class="mb-6">
+                            <h2 tabindex="0" aria-label="Communication Board" data-read-aloud="Communication Board" class="text-3xl md:text-4xl font-extrabold text-main mb-2 focus:outline-none focus:ring-4 focus:ring-primary rounded-lg">Communication Board</h2>
+                            <p tabindex="0" data-read-aloud="Use tab or swipe to explore categories. Tap or press enter to speak." class="text-muted text-lg focus:outline-none focus:ring-4 focus:ring-primary rounded-lg">Use tab or swipe to explore categories. Tap or press enter to speak.</p>
+                        </div>
+
+                        <!-- Quick Responses Bar -->
+                        <div class="flex gap-4 mb-8 overflow-x-auto pb-2 snap-x" role="region" aria-label="Quick Responses">
+                            <button onclick="speakText('Yes')" aria-label="Quick response: Yes" data-read-aloud="Yes" class="snap-start shrink-0 w-32 h-20 bg-green-500 hover:bg-green-600 text-white rounded-2xl flex flex-col items-center justify-center font-bold text-2xl shadow-md transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-green-500">
+                                <i class="fa-solid fa-check mb-1"></i> YES
+                            </button>
+                            <button onclick="speakText('No')" aria-label="Quick response: No" data-read-aloud="No" class="snap-start shrink-0 w-32 h-20 bg-red-500 hover:bg-red-600 text-white rounded-2xl flex flex-col items-center justify-center font-bold text-2xl shadow-md transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-red-500">
+                                <i class="fa-solid fa-xmark mb-1"></i> NO
+                            </button>
+                            <button onclick="speakText('Thank you')" aria-label="Quick response: Thank you" data-read-aloud="Thank you" class="snap-start shrink-0 w-40 h-20 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl flex flex-col items-center justify-center font-bold text-xl shadow-md transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-hands-clapping mb-1"></i> Thanks
+                            </button>
+                             <button onclick="speakText('I need a moment.')" aria-label="Quick response: I need a moment" data-read-aloud="I need a moment" class="snap-start shrink-0 w-48 h-20 bg-purple-500 hover:bg-purple-600 text-white rounded-2xl flex flex-col items-center justify-center font-bold text-xl shadow-md transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-purple-500">
+                                <i class="fa-solid fa-hand mb-1"></i> Need a moment
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            `;
+
+            phrases.forEach(category => {
+                html += `
+                            <div class="surface-card p-6 rounded-3xl" role="region" aria-label="${category.category} Category">
+                                <h3 tabindex="0" data-read-aloud="Category: ${category.category}" class="text-xl font-black text-main mb-4 uppercase tracking-wide border-b-2 border-theme pb-3 flex items-center gap-2 focus:outline-none focus:ring-4 focus:ring-primary rounded-lg">
+                                     ${category.category}
+                                </h3>
+                                <div class="flex flex-col gap-3">
+                `;
+                
+                category.items.forEach(phrase => {
+                    html += `
+                                    <button onclick="openAslModal('${phrase.text.replace(/'/g, "\\'")}')" aria-label="${phrase.text}" data-read-aloud="${phrase.text.replace(/"/g, '&quot;')}" class="text-left w-full p-4 rounded-2xl border-2 border-theme hover:border-primary ${category.color} transition-all font-bold text-main flex items-center gap-4 group focus:outline-none focus:ring-4 focus:ring-primary">
+                                        <div class="w-12 h-12 rounded-xl bg-white dark:bg-gray-800 shadow-sm flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid ${phrase.icon} text-2xl ${category.iconColor}"></i>
+                                        </div>
+                                        <span class="text-lg leading-tight flex-1">${phrase.text}</span>
+                                        <i class="fa-solid fa-volume-high text-muted opacity-50 group-hover:opacity-100 group-hover:text-primary transition-all"></i>
+                                    </button>
+                    `;
+                });
+
+                html += `
+                                </div>
+                            </div>
+                `;
+            });
+
+            html += `
+                        </div>
+                    </div>
+
+                    <!-- Custom Type Keyboard (Always at Bottom) -->
+                    <div class="w-full max-w-3xl mx-auto pt-4" role="region" aria-label="Custom Type Keyboard">
+                        <div class="surface-card p-6 md:p-8 rounded-3xl shadow-xl border-2 border-theme">
+                            <h3 tabindex="0" data-read-aloud="Custom Type Keyboard" class="text-xl font-black text-main mb-4 uppercase tracking-wide border-b-2 border-theme pb-3 flex items-center gap-2 focus:outline-none focus:ring-4 focus:ring-primary rounded-lg">
+                                 <i class="fa-solid fa-keyboard text-primary"></i> Custom Type
+                            </h3>
+                            <div class="mb-5 flex gap-2">
+                                <input type="text" id="custom-type-input" placeholder="Type or click keys..." class="input-field flex-1 font-bold text-lg" onkeypress="handleKeyboardEnter(event)">
+                                <button onclick="document.getElementById('custom-type-input').value=''; document.getElementById('custom-type-input').focus();" class="p-3 rounded-xl border-2 border-theme text-muted hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-colors" aria-label="Clear typed text">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Virtual Keyboard Layout -->
+                            <div class="flex flex-col gap-2.5 select-none">
+                                <div class="flex justify-center gap-1.5">
+                                    ${['Q','W','E','R','T','Y','U','I','O','P'].map(k => `<button onclick="typeKey('${k.toLowerCase()}')" class="flex-1 py-3.5 rounded-lg border-2 border-theme bg-white dark:bg-gray-800 text-main font-bold shadow-sm hover:border-primary active:scale-95 transition-all text-sm md:text-base">${k}</button>`).join('')}
+                                </div>
+                                <div class="flex justify-center gap-1.5 px-3">
+                                    ${['A','S','D','F','G','H','J','K','L'].map(k => `<button onclick="typeKey('${k.toLowerCase()}')" class="flex-1 py-3.5 rounded-lg border-2 border-theme bg-white dark:bg-gray-800 text-main font-bold shadow-sm hover:border-primary active:scale-95 transition-all text-sm md:text-base">${k}</button>`).join('')}
+                                </div>
+                                <div class="flex justify-center gap-1.5 px-6">
+                                    ${['Z','X','C','V','B','N','M'].map(k => `<button onclick="typeKey('${k.toLowerCase()}')" class="flex-1 py-3.5 rounded-lg border-2 border-theme bg-white dark:bg-gray-800 text-main font-bold shadow-sm hover:border-primary active:scale-95 transition-all text-sm md:text-base">${k}</button>`).join('')}
+                                    <button onclick="deleteKey()" class="flex-[1.5] py-3.5 rounded-lg border-2 border-theme bg-gray-100 dark:bg-gray-700 text-main font-bold shadow-sm hover:border-primary active:scale-95 transition-all flex items-center justify-center">
+                                        <i class="fa-solid fa-delete-left text-lg"></i>
+                                    </button>
+                                </div>
+                                <div class="flex justify-center gap-2 mt-2">
+                                    <button onclick="typeKey(' ')" class="flex-[2] py-4 rounded-xl border-2 border-theme bg-white dark:bg-gray-800 text-main font-bold shadow-sm hover:border-primary active:scale-95 transition-all uppercase text-xs tracking-widest">
+                                        Space
+                                    </button>
+                                    <button onclick="speakCustomText()" class="flex-[3] py-4 rounded-xl bg-primary text-white font-bold shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 text-lg">
+                                        <i class="fa-solid fa-volume-high text-xl"></i> Speak Text
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+
+        // --- Tab 4: Live Transcribe (Modernized UI) ---
+        let recognition = null;
+        let transcripts = [];
+
+        function toggleMicrophone() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showModal("Not Supported", "Speech recognition is not supported in this browser. Please try Chrome, Edge, or Safari.", "error");
+                return;
+            }
+
+            if (state.isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+
+        function startListening() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            const btn = document.getElementById('mic-btn');
+            const statusText = document.getElementById('transcribe-status');
+            const emptyState = document.getElementById('transcribe-empty');
+
+            recognition.onstart = function() {
+                state.isListening = true;
+                btn.classList.add('pulse-ring', 'bg-red-500', 'scale-110');
+                btn.classList.remove('bg-primary');
+                btn.innerHTML = '<i class="fa-solid fa-stop text-4xl"></i>';
+                statusText.innerText = "Listening... Ask the doctor to speak.";
+                statusText.classList.add('text-red-500', 'font-bold');
+                if(emptyState) emptyState.style.display = 'none';
+            };
+
+            recognition.onresult = function(event) {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                if (finalTranscript) {
+                    transcripts.push(finalTranscript);
+                }
+                
+                renderTranscripts(interimTranscript);
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Speech error", event.error);
+                if(event.error !== 'no-speech') {
+                    stopListening();
+                    showModal("Microphone Error", "Could not access microphone. Please check permissions.", "error");
+                }
+            };
+
+            recognition.onend = function() {
+                if (state.isListening) {
+                    recognition.start(); // Auto-restart on pauses
+                }
+            };
+
+            recognition.start();
+        }
+
+        function renderTranscripts(interim = '') {
+            const outputBox = document.getElementById('transcribe-output');
+            if(!outputBox) return;
+
+            let html = '';
+            transcripts.forEach(text => {
+                html += `
+                    <div class="flex gap-4 mb-6 fade-in">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-1">
+                            <i class="fa-solid fa-user-doctor text-blue-600"></i>
+                        </div>
+                        <div class="surface border border-theme rounded-2xl rounded-tl-none p-4 shadow-sm">
+                            <p class="text-xl md:text-2xl font-medium leading-relaxed">${text}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (interim) {
+                 html += `
+                    <div class="flex gap-4 mb-6 opacity-60">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center shrink-0 mt-1">
+                            <i class="fa-solid fa-ellipsis text-gray-500 animate-pulse"></i>
+                        </div>
+                        <div class="surface border border-theme border-dashed rounded-2xl rounded-tl-none p-4">
+                            <p class="text-xl md:text-2xl font-medium leading-relaxed italic">${interim}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            outputBox.innerHTML = html;
+            const container = document.getElementById('transcribe-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function stopListening() {
+            state.isListening = false;
+            if (recognition) recognition.stop();
+            
+            const btn = document.getElementById('mic-btn');
+            const statusText = document.getElementById('transcribe-status');
+            
+            if(btn && statusText) {
+                btn.classList.remove('pulse-ring', 'bg-red-500', 'scale-110');
+                btn.classList.add('bg-primary');
+                btn.innerHTML = '<i class="fa-solid fa-microphone text-4xl"></i>';
+                statusText.innerText = "Tap microphone to start listening";
+                statusText.classList.remove('text-red-500', 'font-bold');
+            }
+        }
+
+        function renderTranscribe() {
+            stopListening();
+            return `
+                <div class="max-w-4xl mx-auto h-full flex flex-col fade-in">
+                    <div class="mb-6 flex justify-between items-end">
+                        <div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-main mb-2">Live Transcribe</h2>
+                            <p class="text-muted text-lg">Real-time speech-to-text for medical conversations.</p>
+                        </div>
+                        <button onclick="transcripts=[]; document.getElementById('transcribe-output').innerHTML=''; document.getElementById('transcribe-empty').style.display='flex';" class="p-3 surface border-2 border-theme rounded-xl text-main hover:bg-red-50 hover:text-red-500 hover:border-red-200 font-bold transition-all shadow-sm">
+                            <i class="fa-solid fa-trash-can md:mr-2"></i><span class="hidden md:inline">Clear</span>
+                        </button>
+                    </div>
+
+                    <!-- Output Area -->
+                    <div id="transcribe-container" class="flex-1 surface-card rounded-3xl p-6 mb-6 overflow-y-auto min-h-[40vh] border border-theme bg-gray-50/50 dark:bg-gray-900/20">
+                        
+                        <div id="transcribe-empty" class="h-full flex items-center justify-center flex-col gap-4 opacity-50 ${transcripts.length > 0 ? 'hidden' : 'flex'}">
+                            <div class="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center mb-4">
+                                <i class="fa-solid fa-ear-listen text-5xl text-gray-400"></i>
+                            </div>
+                            <p class="text-xl font-bold">Transcription will appear here...</p>
+                            <p class="text-sm">Ensure your microphone is not muted.</p>
+                        </div>
+
+                        <div id="transcribe-output" class="text-main pb-4"></div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="flex flex-col items-center gap-6 py-4 pb-8">
+                        <button id="mic-btn" onclick="toggleMicrophone()" class="bg-primary text-white w-28 h-28 rounded-full shadow-xl shadow-indigo-500/30 flex items-center justify-center transition-all hover:scale-105 border-4 border-white dark:border-gray-800">
+                            <i class="fa-solid fa-microphone text-4xl"></i>
+                        </button>
+                        <p id="transcribe-status" class="text-muted font-bold text-lg bg-white dark:bg-gray-800 px-6 py-2 rounded-full shadow-sm border border-theme">Tap microphone to start listening</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.onload = () => {
+            init();
+            if (transcripts.length > 0) renderTranscripts();
+        };
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
+
+        // --- Long Press to Speak Functionality ---
+        let holdTimer = null;
+        let startX, startY;
+
+        function setupLongPressReader() {
+            // Touch/Mouse holds
+            document.addEventListener('mousedown', startHold);
+            document.addEventListener('touchstart', startHold, {passive: true});
+            document.addEventListener('mousemove', moveHold);
+            document.addEventListener('touchmove', moveHold, {passive: true});
+            document.addEventListener('mouseup', cancelHold);
+            document.addEventListener('touchend', cancelHold);
+            document.addEventListener('touchcancel', cancelHold);
+
+            // Self-Voicing Keyboard/Switch Focus
+            // Speaks aloud whenever a focusable element (button, input, header) is tabbed to
+            document.addEventListener('focusin', (e) => {
+                const target = e.target.closest('[data-read-aloud]');
+                if (target) {
+                    // Slight delay to prevent overlapping rapid tabs
+                    setTimeout(() => {
+                        if (document.activeElement === target) {
+                            speakText(target.getAttribute('data-read-aloud'));
+                        }
+                    }, 150);
+                }
+            });
+        }
+
+        function startHold(e) {
+            const target = e.target.closest('[data-read-aloud]');
+            if (!target) return;
+            
+            // Record starting position to detect drag/scroll cancellations
+            if (e.type === 'touchstart') {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            } else {
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+
+            const text = target.getAttribute('data-read-aloud');
+            
+            holdTimer = setTimeout(() => {
+                speakText(text);
+                
+                // Haptic feedback if supported
+                if (navigator.vibrate) navigator.vibrate(50);
+                
+                // Temporary visual cue that the element was read
+                target.style.transition = 'all 0.3s';
+                target.classList.add('ring-4', 'ring-primary', 'scale-[1.02]');
+                setTimeout(() => {
+                    target.classList.remove('ring-4', 'ring-primary', 'scale-[1.02]');
+                }, 1000);
+                
+                holdTimer = null;
+            }, 2000); // 2 second hold
+        }
+
+        function moveHold(e) {
+            if (!holdTimer) return;
+            let currentX, currentY;
+            
+            if (e.type === 'touchmove') {
+                currentX = e.touches[0].clientX;
+                currentY = e.touches[0].clientY;
+            } else {
+                currentX = e.clientX;
+                currentY = e.clientY;
+            }
+            
+            // Cancel if pointer moved more than 15 pixels (allows for slight thumb wiggling)
+            if (Math.abs(currentX - startX) > 15 || Math.abs(currentY - startY) > 15) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
+            }
+        }
+
+        function cancelHold() {
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
+            }
+        }
+    </script>
+</body>
+</html>
